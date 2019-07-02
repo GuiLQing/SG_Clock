@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '8.0'
+
+target 'SG_Clock_Example' do
+  pod 'SG_Clock', :path => '../'
+
+  target 'SG_Clock_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
