@@ -37,10 +37,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		32DE7E626A8C10B54BFB580A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		32DE7E626A8C10B54BFB580A /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		466A5DC5890F084EDDC5982D /* Pods-SG_Clock_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SG_Clock_Example.debug.xcconfig"; path = "Target Support Files/Pods-SG_Clock_Example/Pods-SG_Clock_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		4ECA7BD96ABCCEA088045C42 /* Pods_SG_Clock_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SG_Clock_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		55DF03EBC16902E966D5027F /* SG_Clock.podspec */ = {isa = PBXFileReference; includeInIndex = 1; name = SG_Clock.podspec; path = ../SG_Clock.podspec; sourceTree = "<group>"; };
+		55DF03EBC16902E966D5027F /* SG_Clock.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = SG_Clock.podspec; path = ../SG_Clock.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		6003F58A195388D20070C39A /* SG_Clock_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SG_Clock_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -66,7 +66,7 @@
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		8BF5C5356E0B6DAF9D8C7E87 /* Pods_SG_Clock_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SG_Clock_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A92958C73EF84A38C5F2A510 /* Pods-SG_Clock_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SG_Clock_Example.release.xcconfig"; path = "Target Support Files/Pods-SG_Clock_Example/Pods-SG_Clock_Example.release.xcconfig"; sourceTree = "<group>"; };
-		B80EFDF8F18A49E8CB397D48 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		B80EFDF8F18A49E8CB397D48 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,7 +103,6 @@
 				7E4994E4D08A946C29E6834D /* Pods-SG_Clock_Tests.debug.xcconfig */,
 				700D8F3C340D4EF2FB64269E /* Pods-SG_Clock_Tests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -258,6 +257,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
