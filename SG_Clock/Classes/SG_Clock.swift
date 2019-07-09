@@ -21,19 +21,19 @@ func sg_medStepFunction(_ val: CGFloat, stepSize:CGFloat) -> CGFloat{
     let nsf = floor(dval/dStepSize)
     let rest = dval - dStepSize * nsf
     return CGFloat(rest > dStepSize / 2 ? dStepSize * (nsf + 1) : dStepSize * nsf)
-
+    
 }
 
 //XCPlaygroundPage.currentPage.needsIndefiniteExecution = true
 //@IBDesignable
 open class SG_TenClock : UIControl{
-
-    open var delegate:SG_TenClockDelegate?
+    
+    @objc open var delegate:SG_TenClockDelegate?
     //overall inset. Controls all sizes.
     @IBInspectable var insetAmount: CGFloat = 40
     var internalShift: CGFloat = 5;
     var pathWidth:CGFloat = 54
-
+    
     var timeStepSize: CGFloat = 5
     let gradientLayer = CAGradientLayer()
     let trackLayer = CAShapeLayer()
@@ -52,10 +52,10 @@ open class SG_TenClock : UIControl{
             CATransform3DMakeRotation(
                 CGFloat(2*Double.pi) / CGFloat(r.instanceCount),
                 0,0,1)
-
+        
         return r
     }()
-
+    
     let repLayer2:CAReplicatorLayer = {
         var r = CAReplicatorLayer()
         r.instanceCount = 12
@@ -63,7 +63,7 @@ open class SG_TenClock : UIControl{
             CATransform3DMakeRotation(
                 CGFloat(2*Double.pi) / CGFloat(r.instanceCount),
                 0,0,1)
-
+        
         return r
     }()
     let twoPi =  CGFloat(2 * Double.pi)
@@ -78,7 +78,7 @@ open class SG_TenClock : UIControl{
             }
         }
     }
-
+    
     var tailAngle: CGFloat = 0.7 * CGFloat(Double.pi) {
         didSet{
             if (tailAngle  > headAngle + fourPi){
@@ -86,10 +86,10 @@ open class SG_TenClock : UIControl{
             } else if (tailAngle  < headAngle ){
                 tailAngle += fourPi
             }
-
+            
         }
     }
-
+    
     open var shouldMoveHead = true
     open var shouldMoveTail = true
     
@@ -98,27 +98,27 @@ open class SG_TenClock : UIControl{
     open var minorTicksColor:UIColor? = UIColor.lightGray
     open var majorTicksColor:UIColor? = UIColor.blue
     open var centerTextColor:UIColor? = UIColor.darkGray
-
+    
     open var titleColor = UIColor.lightGray
     open var titleGradientMask = false
-
+    
     //disable scrol on closest superview for duration of a valid touch.
     var disableSuperviewScroll = false
-
+    
     open var headBackgroundColor = UIColor.white.withAlphaComponent(0.8)
     open var tailBackgroundColor = UIColor.white.withAlphaComponent(0.8)
-
+    
     open var headText: String = "Start"
     open var tailText: String = "End"
-
+    
     open var headTextColor = UIColor.black
     open var tailTextColor = UIColor.black
-
+    
     open var minorTicksEnabled:Bool = true
     open var majorTicksEnabled:Bool = true
     @objc open var disabled:Bool = false {
         didSet{
-        		sg_update()
+            sg_update()
         }
     }
     
@@ -126,40 +126,40 @@ open class SG_TenClock : UIControl{
     func sg_disabledFormattedColor(_ color:UIColor) -> UIColor{
         return disabled ? color.greyscale : color
     }
-
-
-
-
+    
+    
+    
+    
     var trackWidth:CGFloat {return pathWidth }
     func sg_proj(_ theta:Angle) -> CGPoint{
         let center = self.layer.center
         return CGPoint(x: center.x + trackRadius * cos(theta) ,
-                           y: center.y - trackRadius * sin(theta) )
+                       y: center.y - trackRadius * sin(theta) )
     }
-
+    
     var sg_headPoint: CGPoint{
         return sg_proj(headAngle)
     }
     var sg_tailPoint: CGPoint{
         return sg_proj(tailAngle)
     }
-
+    
     lazy internal var calendar = Calendar(identifier:Calendar.Identifier.gregorian)
     func sg_toDate(_ val:CGFloat)-> Date {
-//        var comps = DateComponents()
-//        comps.minute = Int(val)
+        //        var comps = DateComponents()
+        //        comps.minute = Int(val)
         return calendar.date(byAdding: Calendar.Component.minute , value: Int(val), to: Date().startOfDay as Date)!
-//        return calendar.dateByAddingComponents(comps, sg_toDate: Date().startOfDay as Date, options: .init(rawValue:0))!
+        //        return calendar.dateByAddingComponents(comps, sg_toDate: Date().startOfDay as Date, options: .init(rawValue:0))!
     }
-    open var startDate: Date{
+    @objc open var startDate: Date{
         get{return sg_angleToTime(tailAngle) }
         set{ tailAngle = sg_timeToAngle(newValue) }
     }
-    open var endDate: Date{
+    @objc open var endDate: Date{
         get{return sg_angleToTime(headAngle) }
         set{ headAngle = sg_timeToAngle(newValue) }
     }
-
+    
     var internalRadius:CGFloat {
         return internalInset.height
     }
@@ -190,17 +190,17 @@ open class SG_TenClock : UIControl{
             pathLayer.strokeColor = strokeColor.cgColor
         }
     }
-
-
+    
+    
     // input a date, output: 0 to 4pi
     func sg_timeToAngle(_ date: Date) -> Angle{
         let units : Set<Calendar.Component> = [.hour, .minute]
         let components = self.calendar.dateComponents(units, from: date)
         let min = Double(  60 * components.hour! + components.minute! )
-
+        
         return sg_medStepFunction(CGFloat(Double.pi / 2 - ( min / (12 * 60)) * 2 * Double.pi), stepSize: CGFloat( 2 * Double.pi / (12 * 60 / 5)))
     }
-
+    
     // input an angle, output: 0 to 4pi
     func sg_angleToTime(_ angle: Angle) -> Date{
         let dAngle = Double(angle)
@@ -212,26 +212,26 @@ open class SG_TenClock : UIControl{
         super.prepareForInterfaceBuilder()
         sg_update()
     }
-    open func sg_update() {
+    @objc open func sg_update() {
         let mm = min(self.layer.bounds.size.height, self.layer.bounds.size.width)
         CATransaction.begin()
         self.layer.size = CGSize(width: mm, height: mm)
-
+        
         strokeColor = sg_disabledFormattedColor(tintColor)
         overallPathLayer.occupation = layer.occupation
         gradientLayer.occupation = layer.occupation
-
+        
         trackLayer.occupation = (inset.size, layer.center)
-
+        
         pathLayer.occupation = (inset.size, overallPathLayer.center)
         repLayer.occupation = (internalInset.size, overallPathLayer.center)
         repLayer2.occupation  =  (internalInset.size, overallPathLayer.center)
         numeralsLayer.occupation = (numeralInset.size, layer.center)
-
+        
         trackLayer.fillColor = UIColor.clear.cgColor
         pathLayer.fillColor = UIColor.clear.cgColor
-
-
+        
+        
         CATransaction.setValue(kCFBooleanTrue, forKey: kCATransactionDisableActions)
         sg_updateGradientLayer()
         sg_updateTrackLayerPath()
@@ -241,28 +241,28 @@ open class SG_TenClock : UIControl{
         sg_updateWatchFaceNumerals()
         sg_updateWatchFaceTitle()
         CATransaction.commit()
-
+        
     }
     func sg_updateGradientLayer() {
-
+        
         gradientLayer.colors =
             [tintColor,
-                tintColor.modified(withAdditionalHue: -0.08, additionalSaturation: 0.15, additionalBrightness: 0.2)]
+             tintColor.modified(withAdditionalHue: -0.08, additionalSaturation: 0.15, additionalBrightness: 0.2)]
                 .map(sg_disabledFormattedColor)
                 .map{$0.cgColor}
         gradientLayer.mask = overallPathLayer
         gradientLayer.startPoint = CGPoint(x:0,y:0)
     }
-
+    
     func sg_updateTrackLayerPath() {
         let circle = UIBezierPath(
             ovalIn: CGRect(
                 origin:CGPoint(x: 0, y: 00),
                 size: CGSize(width:trackLayer.size.width,
-                    height: trackLayer.size.width)))
+                             height: trackLayer.size.width)))
         trackLayer.lineWidth = pathWidth
         trackLayer.path = circle.cgPath
-
+        
     }
     override open func layoutSubviews() {
         sg_update()
@@ -271,7 +271,7 @@ open class SG_TenClock : UIControl{
         let arcCenter = pathLayer.center
         pathLayer.fillColor = UIColor.clear.cgColor
         pathLayer.lineWidth = pathWidth
-//        print("start = \(headAngle / CGFloat(Double.pi)), end = \(tailAngle / CGFloat(Double.pi))")
+        //        print("start = \(headAngle / CGFloat(Double.pi)), end = \(tailAngle / CGFloat(Double.pi))")
         pathLayer.path = UIBezierPath(
             arcCenter: arcCenter,
             radius: trackRadius,
@@ -279,8 +279,8 @@ open class SG_TenClock : UIControl{
             endAngle: ( twoPi ) -  headAngle,
             clockwise: true).cgPath
     }
-
-
+    
+    
     func sg_tlabel(_ str:String, color:UIColor? = nil) -> CATextLayer{
         let f = UIFont.preferredFont(forTextStyle: UIFontTextStyle.caption2)
         let cgFont = CTFontCreateWithName((f.fontName as CFString?)!, f.pointSize/2,nil)
@@ -292,7 +292,7 @@ open class SG_TenClock : UIControl{
         l.contentsScale = UIScreen.main.scale
         l.font = cgFont
         l.string = str
-
+        
         return l
     }
     func sg_updateHeadTailLayers() {
@@ -325,8 +325,8 @@ open class SG_TenClock : UIControl{
         topHeadLayer.addSublayer(endText)
         topTailLayer.addSublayer(stText)
     }
-
-
+    
+    
     func sg_updateWatchFaceNumerals() {
         numeralsLayer.sublayers?.forEach({$0.removeFromSuperlayer()})
         let f = UIFont.preferredFont(forTextStyle: UIFontTextStyle.caption2)
@@ -358,7 +358,7 @@ open class SG_TenClock : UIControl{
             
         }
         let cgFont = CTFontCreateWithName((f.fontName as CFString?)!, f.pointSize/2,nil)
-//        let titleTextLayer = CATextLayer()
+        //        let titleTextLayer = CATextLayer()
         titleTextLayer.bounds.size = CGSize( width: titleTextInset.size.width, height: 50)
         titleTextLayer.fontSize = f.pointSize
         titleTextLayer.alignmentMode = kCAAlignmentCenter
@@ -367,13 +367,13 @@ open class SG_TenClock : UIControl{
         titleTextLayer.font = cgFont
         //var computedTailAngle = tailAngle //+ (headAngle > tailAngle ? twoPi : 0)
         //computedTailAngle +=  (headAngle > computedTailAngle ? twoPi : 0)
-//        var fiveMinIncrements = Int( ((tailAngle - headAngle) / twoPi) * 12 /*hrs*/ * 12 /*5min increments*/)
-//        if fiveMinIncrements < 0 {
-//            print("tenClock:Err: is negative")
-//            fiveMinIncrements += (24 * (60/5))
-//        }
-//
-//        titleTextLayer.string = "\(fiveMinIncrements / 12)时 \((fiveMinIncrements % 12) * 5)分"
+        //        var fiveMinIncrements = Int( ((tailAngle - headAngle) / twoPi) * 12 /*hrs*/ * 12 /*5min increments*/)
+        //        if fiveMinIncrements < 0 {
+        //            print("tenClock:Err: is negative")
+        //            fiveMinIncrements += (24 * (60/5))
+        //        }
+        //
+        //        titleTextLayer.string = "\(fiveMinIncrements / 12)时 \((fiveMinIncrements % 12) * 5)分"
         var time = endDate.timeIntervalSince(startDate)
         if time < 0 {
             time += 60 * 24 * 60
@@ -382,7 +382,7 @@ open class SG_TenClock : UIControl{
         let min = Int((time - Double(hour * 3600)) / 60)
         titleTextLayer.string = "\(hour)时\(min)分"
         titleTextLayer.position = gradientLayer.center
-
+        
     }
     func sg_tick() -> CAShapeLayer{
         let sg_tick = CAShapeLayer()
@@ -393,7 +393,7 @@ open class SG_TenClock : UIControl{
         sg_tick.bounds.size = CGSize(width: 6, height: 6)
         return sg_tick
     }
-
+    
     func sg_updateWatchFaceTicks() {
         repLayer.sublayers?.forEach({$0.removeFromSuperlayer()})
         let t = sg_tick()
@@ -402,7 +402,7 @@ open class SG_TenClock : UIControl{
         repLayer.addSublayer(t)
         repLayer.position = self.bounds.center
         repLayer.bounds.size = self.internalInset.size
-
+        
         repLayer2.sublayers?.forEach({$0.removeFromSuperlayer()})
         let t2 = sg_tick()
         t2.strokeColor = sg_disabledFormattedColor(majorTicksColor ?? tintColor).cgColor
@@ -413,13 +413,13 @@ open class SG_TenClock : UIControl{
         repLayer2.bounds.size = self.internalInset.size
     }
     var pointerLength:CGFloat = 0.0
-
+    
     func sg_createSublayers() {
         layer.addSublayer(repLayer2)
         layer.addSublayer(repLayer)
         layer.addSublayer(numeralsLayer)
         layer.addSublayer(trackLayer)
-
+        
         overallPathLayer.addSublayer(pathLayer)
         overallPathLayer.addSublayer(headLayer)
         overallPathLayer.addSublayer(tailLayer)
@@ -433,53 +433,53 @@ open class SG_TenClock : UIControl{
     }
     override public init(frame: CGRect) {
         super.init(frame:frame)
-//        self.addConstraint(NSLayoutConstraint(item: self, attribute: .Width, relatedBy: .Equal, toItem: self	, attribute: .Height, multiplier: 1, constant: 0))
-       // tintColor = UIColor ( red: 0.755, green: 0.0, blue: 1.0, alpha: 1.0 )
+        //        self.addConstraint(NSLayoutConstraint(item: self, attribute: .Width, relatedBy: .Equal, toItem: self    , attribute: .Height, multiplier: 1, constant: 0))
+        // tintColor = UIColor ( red: 0.755, green: 0.0, blue: 1.0, alpha: 1.0 )
         backgroundColor = UIColor ( red: 0.1149, green: 0.115, blue: 0.1149, alpha: 0.0 )
         sg_createSublayers()
     }
-
-
+    
+    
     required public init?(coder: NSCoder) {
         super.init(coder: coder)
-
+        
         //tintColor = UIColor ( red: 0.755, green: 0.0, blue: 1.0, alpha: 1.0 )
         backgroundColor = UIColor ( red: 0.1149, green: 0.115, blue: 0.1149, alpha: 0.0 )
         sg_createSublayers()
     }
-
-
+    
+    
     fileprivate var backingValue: Float = 0.0
-
+    
     /** Contains the receiver’s current value. */
     var value: Float {
         get { return backingValue }
         set { setValue(newValue, animated: false) }
     }
-
+    
     /** Sets the receiver’s current value, allowing you to animate the change visually. */
     func setValue(_ value: Float, animated: Bool) {
         if value != backingValue {
             backingValue = min(maximumValue, max(minimumValue, value))
         }
     }
-
+    
     /** Contains the minimum value of the receiver. */
     var minimumValue: Float = 0.0
-
+    
     /** Contains the maximum value of the receiver. */
     var maximumValue: Float = 1.0
-
+    
     /** Contains a Boolean value indicating whether changes
      in the sliders value generate continuous sg_update events. */
     var continuous = true
     var valueChanged = false
-
-
+    
+    
     var pointMover:((CGPoint) ->())?
     override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard !disabled  else {
-        		pointMover = nil
+            pointMover = nil
             return
         }
         
@@ -487,14 +487,14 @@ open class SG_TenClock : UIControl{
         let touch = touches.first!
         let pointOfTouch = touch.location(in: self)
         guard let layer = self.overallPathLayer.hitTest( pointOfTouch ) else { return }
-//         superview:UIView
-//        for superview in touch.gestureRecognizers!{
-//            guard let superview = superview as? UIPanGestureRecognizer else {  continue }
-//            superview.isEnabled = false
-//            superview.isEnabled = true
-//            break
-//        }
-
+        //         superview:UIView
+        //        for superview in touch.gestureRecognizers!{
+        //            guard let superview = superview as? UIPanGestureRecognizer else {  continue }
+        //            superview.isEnabled = false
+        //            superview.isEnabled = true
+        //            break
+        //        }
+        
         var prev = pointOfTouch
         let pointerMoverProducer: (@escaping (CGPoint) -> Angle, @escaping (Angle)->()) -> (CGPoint) -> () = { g, s in
             return { p in
@@ -502,69 +502,69 @@ open class SG_TenClock : UIControl{
                 let computedP = CGPoint(x: p.x, y: self.layer.bounds.height - p.y)
                 let v1 = CGVector(from: c, to: computedP)
                 let v2 = CGVector(angle:g( p ))
-
+                
                 s(clockDescretization(CGVector.signedTheta(v1, vec2: v2)))
                 self.sg_update()
             }
-
+            
         }
-
+        
         switch(layer){
         case headLayer:
             if (shouldMoveHead) {
-            pointMover = pointerMoverProducer({ _ in self.headAngle}, {self.headAngle += $0; self.tailAngle += 0})
+                pointMover = pointerMoverProducer({ _ in self.headAngle}, {self.headAngle += $0; self.tailAngle += 0})
             } else {
                 pointMover = nil
             }
         case tailLayer:
             if (shouldMoveHead) {
-            pointMover = pointerMoverProducer({_ in self.tailAngle}, {self.headAngle += 0;self.tailAngle += $0})
-                } else {
-                    pointMover = nil
+                pointMover = pointerMoverProducer({_ in self.tailAngle}, {self.headAngle += 0;self.tailAngle += $0})
+            } else {
+                pointMover = nil
             }
         case pathLayer:
             if (shouldMoveHead) {
-            		pointMover = pointerMoverProducer({ pt in
-                		let x = CGVector(from: self.bounds.center,
-                		                 to:CGPoint(x: prev.x, y: self.layer.bounds.height - prev.y)).theta;
+                pointMover = pointerMoverProducer({ pt in
+                    let x = CGVector(from: self.bounds.center,
+                                     to:CGPoint(x: prev.x, y: self.layer.bounds.height - prev.y)).theta;
                     prev = pt;
                     return x
-                    }, {self.headAngle += $0; self.tailAngle += $0 })
+                }, {self.headAngle += $0; self.tailAngle += $0 })
             } else {
-                    pointMover = nil
+                pointMover = nil
             }
         default: break
         }
-
-
-
+        
+        
+        
     }
     override open  func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        while var superview = self.superview{
-//            guard let superview = superview as? UIScrollView else {  continue }
-//            superview.scrollEnabled = true
-//            break
-//        }
+        //        while var superview = self.superview{
+        //            guard let superview = superview as? UIScrollView else {  continue }
+        //            superview.scrollEnabled = true
+        //            break
+        //        }
     }
     override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         pointMover = nil
-//        while var superview = self.superview{
-//            guard let superview = superview as? UIScrollView else {  continue }
-//            superview.scrollEnabled = true
-//            break
-//        }
-//        do something
-//        valueChanged = false
+        //        while var superview = self.superview{
+        //            guard let superview = superview as? UIScrollView else {  continue }
+        //            superview.scrollEnabled = true
+        //            break
+        //        }
+        //        do something
+        //        valueChanged = false
         delegate?.sg_timesChanged?(self, startDate: self.startDate, endDate: endDate)
     }
     override open func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard let touch = touches.first, let pointMover = pointMover else { return }
-//        print(touch.locationInView(self))
+        //        print(touch.locationInView(self))
         pointMover(touch.location(in: self))
         
-    	delegate?.sg_timesChanged?(self, startDate: self.startDate, endDate: endDate)
+        delegate?.sg_timesUpdated?(self, startDate: self.startDate, endDate: endDate)
         
-
+        
     }
-
+    
 }
