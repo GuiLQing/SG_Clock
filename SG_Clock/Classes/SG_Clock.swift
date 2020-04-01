@@ -282,7 +282,7 @@ open class SG_TenClock : UIControl{
     
     
     func sg_tlabel(_ str:String, color:UIColor? = nil) -> CATextLayer{
-        let f = UIFont.preferredFont(forTextStyle: UIFontTextStyle.caption2)
+        let f = UIDevice.current.userInterfaceIdiom == .pad ? UIFont.systemFont(ofSize: 14.0) : UIFont.systemFont(ofSize: 13.0)
         let cgFont = CTFontCreateWithName((f.fontName as CFString?)!, f.pointSize/2,nil)
         let l = CATextLayer()
         l.bounds.size = CGSize(width: 30, height: 15)
